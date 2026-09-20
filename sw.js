@@ -1,7 +1,7 @@
 /* Scoped app-shell cache. Bump VERSION when publishing changed assets. */
-const VERSION = 'liver-reset-v2';
+const VERSION = 'liver-reset-v3';
 const CACHE = VERSION + '-' + self.registration.scope;
-const ASSETS = ['./', './index.html', './manifest.json', './images/icon-192.png', './images/icon-512.png'];
+const ASSETS = ['./', './index.html', './manifest.json', './images/icon-192.png', './images/icon-512.png', './images/wellness-atlas.png', './images/sunrise.png', './fonts/thai-400.woff2', './fonts/thai-700.woff2'];
 self.addEventListener('install', event => {
   event.waitUntil(caches.open(CACHE).then(cache => cache.addAll(ASSETS)).then(() => self.skipWaiting()));
 });

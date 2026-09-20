@@ -1,5 +1,49 @@
 # 30-Day Liver & Weight Reset
-แอปภาษาไทยสำหรับ iPhone ช่วง 21 กันยายน–20 ตุลาคม 2026 ใช้ HTML + CSS + Vanilla JavaScript ไม่มี backend, framework, analytics หรือ CDN
+แอปภาษาไทยสำหรับ iPhone ช่วง 21 กันยายน–20 ตุลาคม 2026 ใช้ HTML + CSS + Vanilla JavaScript ไม่ใช้ framework หรือ Analytics แกนหลักอยู่ใน index.html ส่วน Firebase เป็นทางเลือกและใช้ SDK จาก CDN โดยไม่ต้องรัน backend เอง
+
+## รุ่น 3 — ธีม Sky & Wellness + Firebase
+
+ปรับธีมตามภาพอ้างอิงเป็นฟ้า–ขาว ปุ่มน้ำเงิน/เขียว วงแหวนกิจกรรม การ์ดอาหารแนวนอน ภาพอาหารและท่าออกกำลังแบบ atlas พร้อมฟอนต์ไทยออฟไลน์และ dark mode ภาพประกอบสร้างขึ้นเพื่อ UI ไม่ใช่การรับรองขนาดอาหารหรือเทคนิคท่าฝึก
+
+**Firebase:** โค้ดพร้อมเชื่อม แต่ยังไม่มี config/โปรเจกต์จริงของผู้ใช้ จึงยังไม่อ้างว่าส่งข้อมูลขึ้น Firebase แล้ว เปิดปุ่มเมฆเพื่อเชื่อม Web config และสมัคร/เข้าสู่บัญชี อ่านขั้นตอนครบใน **FIREBASE_SETUP.md**
+
+- Firebase Authentication: Email/Password
+- Firestore: ข้อมูล 30 วัน อาหารจริง เป้าหมาย เช็กลิสต์ และประวัติแชต แยกตาม UID
+- Cloud Storage: รูป Before/After เมื่อเลือกส่ง/รับรวมรูป (ทางเลือก)
+- localStorage/IndexedDB: แยกพื้นที่ guest กับแต่ละบัญชี ใช้ในเครื่อง/ออฟไลน์ได้
+- Transaction + revision: ถ้าอีกเครื่องแก้ไปแล้ว หยุดให้เลือกชุดข้อมูล ไม่ทับกันเงียบ ๆ
+- สมัครบัญชีไม่คัดลอกข้อมูล guest อัตโนมัติ มีคำสั่งย้ายเฉพาะบันทึก; รูปเดิมย้ายด้วย JSON export/import
+- แชตยังเป็นผู้ช่วยตามกฎในเครื่อง และการเตือนยังทำงานขณะเปิดแอปเท่านั้น
+
+### ไฟล์เพิ่มในรุ่นนี้
+```text
+FIREBASE_SETUP.md
+firestore.rules
+storage.rules
+firebase.json
+storage-cors.example.json
+vercel.json
+ASSETS.md
+images/wellness-atlas.png
+images/sunrise.png
+fonts/thai-400.woff2
+fonts/thai-700.woff2
+fonts/OFL.txt
+```
+
+### อัปเดตเว็บเดิม
+1. Export JSON สำรองในแอปก่อน
+2. แตก ZIP แล้วอัปโหลดเนื้อหาที่ root ของ repository เดิมให้มี index.html, images/, fonts/ และไฟล์อื่นครบ
+3. ใช้ Vercel ได้ด้วย vercel.json ที่แนบ (Other / ไม่ต้อง build / output `.`) หรือใช้ GitHub Pages ตามเดิม
+4. เปิดออนไลน์ที่ URL เดิม รอ “พร้อมใช้ออฟไลน์” ให้ cache รูปและฟอนต์ครบ
+5. ยังไม่เชื่อม Firebase ก็ใช้ข้อมูลเดิมในเครื่องได้ ไม่ reset เดิม
+
+### ผลทดสอบรุ่น 3
+ผ่าน Chromium จริง: 7 หน้า × ความกว้าง 320/390/430/768px ไม่มีล้นแนวนอน, บันทึกหลัง reload, แชตยืนยันรายการ, แก้ไขอาหาร, รูปใน IndexedDB, JSON export/import รวมรูป, โหมด Circuit/Rest, dark mode และ service-worker offline พร้อมภาพ/ฟอนต์ ไม่มี pageerror
+
+ผ่านการทดสอบ cloud logic ด้วย Firebase SDK จำลอง: แยกบัญชี/รูป, การส่งและรับ snapshot, revision conflict, การเลือกทับข้อมูล, ส่ง/รับรูป, ปฏิเสธ service account ใน config แก้บั๊กชื่อฟิลด์ในฟอร์มแก้อาหารที่ชนกับ form.id จากรุ่นก่อนด้วย
+
+**ยังไม่ได้ทดสอบ Firebase production, Rules Emulator หรือ Safari/iPhone จริง** ต้องใส่ config เปิดบริการ และเผยแพร่ rules ก่อนทดสอบกับโปรเจกต์จริง
 
 ## รุ่น 2 — ผู้ช่วยถามตอบและอาหารที่กินจริง
 กดปุ่ม **✦ ผู้ช่วยอาหารและสุขภาพ** เหนือหน้าหลัก ใช้ภาษาไทยพิมพ์หรือใช้ไมค์บนคีย์บอร์ด iPhone ได้
@@ -60,7 +104,7 @@ Export JSON สำรองก่อน จากนั้นแทนที่�
 ### ขอบเขตการทดสอบรุ่น 2
 ตรวจด้วย Node/DOM จำลอง: ย้ายข้อมูลเดิม, แปลงจำนวนไทย/กรัม, คำสั่งรอยืนยัน, ไม่บันทึกซ้ำเมื่อยืนยันซ้ำ, ไม่บันทึกเมนูไม่รู้จักบางส่วน, ไม่ถือค่าน้ำตาลว่างเป็นศูนย์, สถิติและวันอนาคต, JSON roundtrip, validation, การ render 6 หน้า ×30 วัน และ Workout Circuit/Rest เดิม ผ่านแล้ว
 
-ยังไม่ได้ทดสอบบน Safari/iPhone จริงหรือยืนยัน IndexedDB, layout, service worker และ download dialog ในเบราว์เซอร์จริง โปรดใช้ไฟล์สำรองและทดสอบกับข้อมูลทดลองก่อนใช้งานต่อเนื่อง
+รุ่น 3 ตรวจ IndexedDB, layout, service worker และ download dialog ใน Chromium จริงแล้ว ตามผลทดสอบด้านบน ยังต้องตรวจ Safari/iPhone และ Firebase production เพิ่ม
 
 อ้างอิงความแตกต่างของ free sugars และน้ำตาลธรรมชาติ: https://www.who.int/news/item/04-03-2015-who-calls-on-countries-to-reduce-sugars-intake-among-adults-and-children
 
@@ -82,7 +126,7 @@ liver-reset/
     icon-512.png
     [ภาพอาหารและออกกำลัง .jpg เป็นตัวเลือก]
 ```
-รูปอาหารและออกกำลังกายเป็น placeholder ที่ออกแบบไว้ พร้อมชื่อและ emoji; ยังไม่แนบภาพถ่ายหรือภาพท่าจริง เพิ่มตาม path ใน images/README.md ได้ ถ้ารูปหายหรือโหลดไม่ได้ หน้าแอปไม่เสีย
+รุ่น 3 มีภาพอาหารและท่าออกกำลังกายแบบ atlas ใน images/wellness-atlas.png และภาพพื้นหลัง sunrise.png เพิ่ม JPG แยกตาม path ใน images/README.md เพื่อทับภาพมาตรฐานได้ หากไฟล์ภาพหายจะใช้ placeholder/emoji
 
 ## Deploy ด้วย GitHub Pages
 1. สร้าง repository เช่น `liver-reset` บน GitHub (บัญชีทั่วไปใช้ public repository สำหรับ Pages)
@@ -159,11 +203,11 @@ liver-reset/
 ## Offline และอัปเดต
 PWA ต้องใช้ HTTPS หรือ localhost; file:// ไม่มี service worker ครั้งแรกต้องออนไลน์และไฟล์หลักกับไอคอนครบ เมื่อแสดงพร้อมออฟไลน์แล้ว cache จะมี app shell ภาพ JPG เสริมจะ cache หลังเคยเปิดดูสำเร็จเท่านั้น placeholder ใช้ได้ตลอด ภาพ Before/After ไม่ผ่าน service worker
 
-เมื่อแก้ไฟล์และ deploy เวอร์ชันใหม่ ให้เปลี่ยน VERSION ใน sw.js เช่น liver-reset-v3 เปิดออนไลน์ใหม่เพื่อรับอัปเดต การอัปเดต cache ไม่ล้าง localStorage/IndexedDB
+เมื่อแก้ไฟล์และ deploy เวอร์ชันใหม่ ให้เปลี่ยน VERSION ใน sw.js เช่น liver-reset-v4 เปิดออนไลน์ใหม่เพื่อรับอัปเดต การอัปเดต cache ไม่ล้าง localStorage/IndexedDB
 
 ## การทดสอบ
 ตรวจ JavaScript และ service worker syntax, JSON manifest, ช่วงวันที่ครบ 30 วัน, ค่าแคลอรีทุกวัน, สูตรคะแนน/น้ำหนัก, การบันทึกและโหลดกลับด้วย storage จำลอง, การ render 5 หน้า ×30 วันใน DOM จำลอง, Circuit 3 รอบ, เวลาพัก 45 วินาที, การทำ workout จบ, การตรวจ schema และ JSON roundtrip ผ่านแล้ว
 
-ข้อจำกัดการทดสอบ: สภาพแวดล้อมนี้ไม่มี browser binary และดาวน์โหลด Chromium ไม่สำเร็จ จึงยังไม่ได้ทดสอบ layout ใน browser จริง, IndexedDB/รูป, download/import dialog, service worker offline หรือ Safari/iPhone จริง การตรวจจำลองไม่ทดแทนการทดสอบในเครื่องจริง
+รุ่น 3 ผ่านการตรวจใน Chromium จริงเพิ่มเติมแล้วตามรายการด้านบน ข้อจำกัดที่เหลือคือ Safari/iPhone จริง, Firebase production และ Rules Emulator
 
 ก่อนใช้จริง: ตั้งค่าน้ำหนักและติ๊กกิจกรรม → refresh ดูว่าคงอยู่ → เลือกรูป → Export → เก็บไฟล์สำรองแล้วทดลอง Import → รอพร้อมออฟไลน์แล้วปิดเน็ตเปิดเว็บใหม่ → ตรวจบน Home Screen อีกครั้ง

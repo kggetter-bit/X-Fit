@@ -1,0 +1,7 @@
+[
+  {
+    "origin": ["https://YOUR-APP.vercel.app", "https://YOUR-USERNAME.github.io"],
+    "method": ["GET"],
+    "maxAgeSeconds": 3600
+  }
+]

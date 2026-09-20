@@ -1,0 +1,31 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function owns(uid) {
+      return request.auth != null && request.auth.uid == uid;
+    }
+    function validPhoto(path, uid) {
+      return path == null || (path is string && path.size() < 300 &&
+        path.matches('users/' + uid + '/photos/[a-zA-Z0-9_-]+/(before|after)[.]jpg'));
+    }
+    function validSnapshot(uid) {
+      let data = request.resource.data;
+      return data.keys().hasAll(['schemaVersion','payload','revision','updatedAt','photoRefs']) &&
+        data.keys().hasOnly(['schemaVersion','payload','revision','updatedAt','photoRefs']) &&
+        data.schemaVersion == 1 && data.payload is string && data.payload.size() <= 850000 &&
+        data.revision is int && data.revision >= 1 && data.updatedAt == request.time &&
+        data.photoRefs is map && data.photoRefs.keys().hasAll(['before','after']) &&
+        data.photoRefs.keys().hasOnly(['before','after']) &&
+        validPhoto(data.photoRefs.before,uid) && validPhoto(data.photoRefs.after,uid);
+    }
+    match /users/{uid}/programs/{programId} {
+      allow get: if owns(uid) && programId == 'liver-reset-2026-09-21';
+      allow create: if owns(uid) && programId == 'liver-reset-2026-09-21' &&
+        validSnapshot(uid) && request.resource.data.revision == 1;
+      allow update: if owns(uid) && programId == 'liver-reset-2026-09-21' &&
+        validSnapshot(uid) && request.resource.data.revision == resource.data.revision + 1;
+      allow delete: if owns(uid) && programId == 'liver-reset-2026-09-21';
+    }
+    // Everything not explicitly allowed is private and denied.
+  }
+}
