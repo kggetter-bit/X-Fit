@@ -1,3 +1,7 @@
+# รุ่นตั้งค่า X-Fit แล้ว
+
+ฝัง Firebase Web config ของโปรเจกต์ `x-fit-ac34c` แล้ว ไม่ต้องวาง config ใหม่ในแอป (ค่าโปรเจกต์ที่เคยบันทึกเองในเบราว์เซอร์ยังมีลำดับความสำคัญก่อน) เปิด Email/Password ใน Authentication และ Publish `firestore.rules` ก่อนใช้งาน ต้องสมัครหรือเข้าสู่ระบบในแอปเพื่อซิงก์ ขณะจัดทำรุ่นนี้ยังไม่ได้ทดสอบการเข้าสู่ระบบหรืออ่านเขียนกับโปรเจกต์จริง และยังไม่ได้ deploy เว็บแทนผู้ใช้
+
 # 30-Day Liver & Weight Reset
 แอปภาษาไทยสำหรับ iPhone ช่วง 21 กันยายน–20 ตุลาคม 2026 ใช้ HTML + CSS + Vanilla JavaScript ไม่ใช้ framework หรือ Analytics แกนหลักอยู่ใน index.html ส่วน Firebase เป็นทางเลือกและใช้ SDK จาก CDN โดยไม่ต้องรัน backend เอง
 
